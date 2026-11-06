@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="utf-8"><title>IQ Test — O'zbekcha</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#0f1226;--c:#1b1f3b;--t:#f2f3ff;--m:#9aa0c8;--a:#7c5cff;--b:#00d1b2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#0f1226}}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--t);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+.w{max-width:480px;margin:0 auto;padding:16px}
+.card{background:var(--c);border-radius:18px;padding:20px;margin:12px 0}
+h1{font-size:26px;margin:8px 0}h2{font-size:19px;margin:0 0 10px}p{color:var(--m);line-height:1.5}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:15px;font-size:17px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--a),#e14cff);margin-top:12px}
+.btn.g{background:linear-gradient(135deg,var(--b),#2f80ed)}.btn.r{background:#e5484d}.btn.s{background:#2b3060;font-size:14px;padding:10px;width:auto;display:inline-block}
+input{width:100%;padding:14px;border-radius:12px;border:1px solid #3a4080;background:#10142e;color:#fff;font-size:16px;margin-top:10px}
+.opt{display:block;width:100%;text-align:left;padding:14px;margin:8px 0;border-radius:12px;border:2px solid #2f3566;background:#10142e;color:var(--t);font-size:16px}
+.opt.on{border-color:var(--b);background:#12332f}
+.bar{height:8px;background:#2b3060;border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--b),var(--a))}
+.top{display:flex;justify-content:space-between;font-weight:700;margin:6px 0}
+.price{font-size:34px;font-weight:800;color:var(--b)}
+.card-n{font-size:21px;letter-spacing:1px;background:#10142e;border:1px dashed var(--b);padding:14px;border-radius:12px;text-align:center;font-weight:700;margin:10px 0;user-select:all}
+#dot{position:fixed;top:0;left:0;font-size:10px;color:#3a4080;padding:16px 20px 20px 16px;z-index:99}
+#mo{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+#mo>div{background:var(--c);padding:20px;border-radius:16px;width:100%;max-width:340px}
+#toast{position:fixed;bottom:30px;left:20px;right:20px;background:#e5484d;color:#fff;padding:14px;border-radius:12px;text-align:center;z-index:101}
+.big{font-size:54px;font-weight:800;text-align:center}
+img.rc{width:100%;border-radius:10px;margin:8px 0}
+.row{background:#10142e;border-radius:14px;padding:12px;margin:10px 0}
+.small{font-size:12px;color:var(--m)}
+</style></head><body>
+<span id="dot" onclick="adminOpen()">.</span>
+<div class="w" id="app"></div>
+<script>
+// ===== SAVOLLAR: har daraja 20 ta (4 tur x 5). Birinchi javob to'g'ri, ko'rsatishda aralashtiriladi =====
+// R=Raqamlar, S=So'z, M=Mantiq, F=Fazoviy/Puzzle
+const CN={R:"Raqamli mantiq",S:"So'z va tushunish",M:"Mantiqiy fikrlash",F:"Fazoviy / Puzzle"};
+const Q=[
+[ // 1-daraja
+["R","2, 4, 6, 8, ?","10|9|12|11"],["R","5 + 7 = ?","12|11|13|10"],["R","1, 3, 5, 7, ?","9|8|10|11"],["R","20 − 8 = ?","12|14|10|13"],["R","10, 20, 30, ?","40|50|35|45"],
+["S","Qaysi biri ortiqcha: olma, nok, uzum, stol","Stol|Olma|Nok|Uzum"],["S","'Katta' so'ziga qarama-qarshi so'z?","Kichik|Baland|Uzun|Keng"],["S","Qaysi ortiqcha: ot, mushuk, it, non","Non|Ot|Mushuk|It"],["S","Qush : uchadi = Baliq : ?","Suzadi|Yuradi|Sakraydi|Uchadi"],["S","Qaysi ortiqcha: qizil, ko'k, yashil, qalam","Qalam|Qizil|Ko'k|Yashil"],
+["M","Hamma mushuklar hayvon. Murka mushuk. Demak Murka ...","Hayvon|Qush|Baliq|Odam"],["M","Dushanba, Seshanba, ?","Chorshanba|Juma|Yakshanba|Payshanba"],["M","Bugun juma bo'lsa, ertaga qaysi kun?","Shanba|Yakshanba|Payshanba|Dushanba"],["M","1 kg paxta va 1 kg temir — qaysi og'ir?","Teng|Temir|Paxta|Aniq emas"],["M","Qo'lda nechta barmoq bor?","5|4|6|10"],
+["F","🔴🔵🔴🔵🔴 ?","🔵|🔴|🟢|🟡"],["F","⬆️➡️⬇️⬅️⬆️ ?","➡️|⬇️|⬅️|⬆️"],["F","Kvadratning nechta burchagi bor?","4|3|5|6"],["F","🟦🟦🟥 🟦🟦🟥 🟦🟦 ?","🟥|🟦|🟩|🟨"],["F","Uchburchakning nechta tomoni bor?","3|4|5|2"]],
+[ // 2
+["R","3, 6, 12, 24, ?","48|36|30|40"],["R","100, 90, 80, 70, ?","60|65|50|55"],["R","2, 3, 5, 8, 12, ?","17|16|15|18"],["R","7 × 8 = ?","56|54|48|64"],["R","1, 4, 9, 16, ?","25|20|24|36"],
+["S","Qora : Oq = Issiq : ?","Sovuq|Qizil|Iliq|Yorug'"],["S","Qaysi ortiqcha: Toshkent, Samarqand, Buxoro, Qozon","Qozon|Toshkent|Samarqand|Buxoro"],["S","Shifokor : Kasalxona = O'qituvchi : ?","Maktab|Bozor|Uy|Stadion"],["S","Qaysi biri boshqalardan farq qiladi: olma, anor, behi, sabzi","Sabzi|Olma|Anor|Behi"],["S","'Tez' so'zining sinonimi?","Chaqqon|Sekin|Og'ir|Baland"],
+["M","Ali Validan baland, Vali Karimdan baland. Eng past kim?","Karim|Ali|Vali|Aniq emas"],["M","Hamma A lar B, hamma B lar C. Demak hamma A lar ...","C|C emas|B emas|Aniq emas"],["M","Soat 3:00 da millar orasidagi burchak?","90°|60°|120°|45°"],["M","Otam 40 yoshda, men 10. 5 yildan keyin yosh farqi?","30|35|25|40"],["M","1 ta tuxum 3 daqiqada qaynasa, 2 ta tuxum (birga) necha daqiqada?","3|6|4|2"],
+["F","🔺🔺🟦 🔺🔺🟦 🔺🔺 ?","🟦|🔺|🔴|🟩"],["F","Kubning nechta yog'i (yuzi) bor?","6|8|4|12"],["F","1→2, 2→4, 3→6, 4→?","8|7|6|10"],["F","⚪⚫⚫⚪⚫⚫⚪⚫⚫⚪ ?","⚫|⚪|🔴|🔵"],["F","Soat 6:00 da millar orasidagi burchak?","180°|90°|120°|60°"]],
+[ // 3
+["R","2, 6, 12, 20, 30, ?","42|40|38|44"],["R","1, 1, 2, 3, 5, 8, ?","13|11|12|10"],["R","5, 10, 20, 40, ?","80|60|70|100"],["R","3, 5, 9, 17, ?","33|31|34|27"],["R","3 ta daftar 12 000 so'm. 5 tasi necha so'm?","20 000|15 000|18 000|25 000"],
+["S","Qalam : Yozmoq = Pichoq : ?","Kesmoq|Pishirmoq|Yemoq|Yuvmoq"],["S","Qaysi ortiqcha: uy, ko'cha, kvartira, villa","Ko'cha|Uy|Kvartira|Villa"],["S","Hayot : O'lim = Boshlanish : ?","Tugash|Davom|Yangi|Boshqa"],["S","'Sabr'ga eng yaqin so'z?","Toqat|Jahl|Shoshilish|Qo'rquv"],["S","Qaysi ortiqcha: Amir Temur, Navoiy, Bobur, Edison","Edison|Navoiy|Bobur|Amir Temur"],
+["M","5 mushuk 5 sichqonni 5 daqiqada tutsa, 100 mushuk 100 sichqonni necha daqiqada?","5|100|20|50"],["M","Qutida 3 qizil, 2 ko'k to'p. Kamida 1 qizil kafolati uchun eng kam nechta to'p olinadi?","3|2|4|1"],["M","3 ta ketma-ket toq son yig'indisi 27. Eng kattasi?","11|9|13|7"],["M","Karim Alidan 2 yosh, Ali Validan 3 yosh katta. Karim Validan necha yosh katta?","5|1|6|3"],["M","30 o'quvchining 2/3 qismi qiz. O'g'il bolalar nechta?","10|20|15|12"],
+["F","▲ ■ ● ▲ ■ ● ▲ ■ ?","●|▲|■|◆"],["F","Kubning nechta qirrasi bor?","12|8|6|10"],["F","Qog'oz 2 marta buklanib, o'rtasiga 1 ta teshik ochildi. Yoyilganda nechta teshik?","4|2|1|8"],["F","⬛⬜⬛⬛⬜⬜⬛⬛⬛ ?","⬜|⬛|🟥|🟦"],["F","Soat 9:00 da millar orasidagi burchak?","90°|60°|120°|180°"]],
+[ // 4
+["R","1, 2, 6, 24, 120, ?","720|240|600|360"],["R","2, 3, 5, 7, 11, ?","13|12|14|15"],["R","4, 9, 16, 25, 36, ?","49|48|56|42"],["R","3, 7, 15, 31, ?","63|62|47|55"],["R","2 ishchi ishni 12 kunda tugatsa, 6 ishchi necha kunda?","4|6|3|8"],
+["S","Qaysi ortiqcha: Yupiter, Mars, Oy, Saturn","Oy|Mars|Yupiter|Saturn"],["S","Shifokor : Bemor = Advokat : ?","Mijoz|Sud|Qonun|Hakam"],["S","Qaysi ortiqcha: Mis, Temir, Oltin, Shisha","Shisha|Mis|Temir|Oltin"],["S","Optimist : Umid = Pessimist : ?","Shubha|Quvonch|Kuch|Boylik"],["S","'MAKTAB' so'zida nechta 'A' bor?","2|1|3|4"],
+["M","Ikki son yig'indisi 20, ayirmasi 4. Kattasi?","12|10|14|16"],["M","Dushanbadan 100 kun keyin qaysi kun?","Chorshanba|Seshanba|Payshanba|Juma"],["M","60 km/s tezlikda 150 km ni necha soatda bosadi?","2,5|2|3|3,5"],["M","3 quti: olma, nok, aralash. Hamma yorliq noto'g'ri. 'Aralash' yorlig'li qutidan olma chiqdi. Bu quti aslida?","Olma|Aralash|Nok|Aniq emas"],["M","10 ta olmaning 20% yeyildi, qolganining yarmi berildi. Nechta qoldi?","4|5|3|6"],
+["F","Kvadrat qog'oz diagonal bo'yicha buklandi. Shakl?","Uchburchak|To'rtburchak|Doira|Trapetsiya"],["F","Soat 3:30 da millar orasidagi burchak?","75°|90°|60°|105°"],["F","Kubning bir uchidan qarama-qarshi uchigacha eng qisqa yo'l necha qirra?","3|2|4|6"],["F","1–9 raqamli sehrli kvadrat (qator yig'indisi 15). Markazda?","5|3|7|9"],["F","🟥🟦🟩 🟦🟩🟥 🟩🟥 ?","🟦|🟥|🟩|🟨"]],
+[ // 5
+["R","2, 12, 36, 80, 150, ?","252|240|216|300"],["R","1, 3, 7, 13, 21, ?","31|29|33|35"],["R","3, 6, 11, 18, 27, ?","38|36|35|40"],["R","5, 6, 8, 12, 20, ?","36|32|28|40"],["R","1/2 + 1/3 + 1/6 = ?","1|5/6|2/3|7/6"],
+["S","Qaysi ortiqcha: Algebra, Geometriya, Trigonometriya, Geografiya","Geografiya|Algebra|Geometriya|Trigonometriya"],["S","Lug'at : So'z = Atlas : ?","Xarita|Kitob|Rasm|Davlat"],["S","Qaysi juftlik farq qiladi?","Katta–Yirik|Issiq–Sovuq|Baland–Past|Yorug'–Qorong'i"],["S","'Ehtiyotkor'ga qarama-qarshi?","Beparvo|Aqlli|Sust|Yumshoq"],["S","Qaysi ortiqcha: Kvadrat, Romb, Doira, To'g'ri to'rtburchak","Doira|Kvadrat|Romb|To'g'ri to'rtburchak"],
+["M","Faqat bittasi rost. A: 'B yolg'on'. B: 'C yolg'on'. C: 'A va B ikkalasi yolg'on'. Kim rost?","B|A|C|Hech kim"],["M","Basseyn 1-quvur bilan 6 soatda, 2-quvur bilan 3 soatda to'ladi. Birga necha soat?","2|4,5|3|1,5"],["M","3 ta ketma-ket son ko'paytmasi 210. Yig'indisi?","18|21|15|20"],["M","Ota o'g'lidan 4 marta katta; 5 yildan keyin 3 marta katta. O'g'il hozir necha yoshda?","10|8|12|5"],["M","100 ta yopiq eshik, 100 kishi: k-kishi k ning karrali eshiklari holatini almashtiradi. Oxirida nechta eshik ochiq?","10|50|100|25"],
+["F","Kubning bir uchida nechta yoq uchrashadi?","3|4|2|6"],["F","2×2×2 kubning tashqi yuzi bo'yalib 8 bo'lakka bo'lindi. Nechtasining 3 ta yog'i bo'yalgan?","8|6|4|0"],["F","3×3×3 kub bo'yalib 27 bo'lakka bo'lindi. Umuman bo'yalmagan bo'lak?","1|3|6|8"],["F","Raqamli soat 12:21. Keyingi palindrom vaqt?","13:31|12:22|12:12|14:41"],["F","5 nuqta (3 tasi bir chiziqda emas) orasidan nechta to'g'ri chiziq o'tadi?","10|5|20|15"]]
+];
+const T=20*60, PRICE="11 999", CARD="9860 1201 1408 2486";
+const $=s=>document.getElementById(s), app=$("app");
+window.alert=m=>{const t=document.createElement("div");t.id="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3000)};
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+let db=null,user={},qs=[],cur=0,ans=[],left=T,tm=null,oid=null;
+try{oid=localStorage.getItem("oid")}catch(e){}
+db=true;
+
+function welcome(){app.dataset.s="w";app.innerHTML=`
+<h1>🧠 IQ Test</h1><p>Xush kelibsiz! 15 ta savol · 20 daqiqa · osondan qiyinga.</p>
+<div class="card"><h2>Ma'lumotlaringiz</h2><input id="n" placeholder="Ism va familiya"><input id="y" type="number" inputmode="numeric" placeholder="Yoshingiz">
+<button class="btn" onclick="start()">Testni boshlash</button></div>
+<p class="small">Bu test ko'ngilochar va o'z-o'zini sinash uchun; rasmiy psixologik tashxis emas.</p>`}
+function start(){const n=$("n").value.trim(),y=+$("y").value;if(n.length<3||!(y>5&&y<100))return alert("Ism-familiya va yoshingizni to'g'ri kiriting");
+user={name:n,age:y};qs=[];Q.forEach((L,i)=>sh(L).slice(0,3).forEach(q=>qs.push({lv:i+1,c:q[0],t:q[1],o:sh(q[2].split("|")),a:q[2].split("|")[0]})));
+cur=0;ans=[];left=T;tm=setInterval(()=>{left--;const e=$("tm");if(e)e.textContent=fmt(left);if(left<=0)finish()},1000);show()}
+const fmt=s=>String(s/60|0).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+function show(){app.dataset.s="q";const q=qs[cur];app.innerHTML=`<div class="top"><span>Savol ${cur+1}/15</span><span>⏱ <b id="tm">${fmt(left)}</b></span></div>
+<div class="bar"><i style="width:${cur/15*100}%"></i></div>
+<div class="card"><p class="small">Daraja: ${"★".repeat(q.lv)}</p><h2 style="font-size:20px;line-height:1.4;color:var(--t)">${q.t}</h2>
+${q.o.map((o,i)=>`<button class="opt ${ans[cur]===o?"on":""}" onclick="pick(${i})">${o}</button>`).join("")}</div>
+<button class="btn" onclick="next()">${cur==14?"Yakunlash":"Keyingisi →"}</button>`}
+function pick(i){ans[cur]=qs[cur].o[i];show()}
+function next(){if(cur==14)finish();else{cur++;show()}}
+function calc(){let raw=0,mx=0,cs={};for(const k in CN)cs[k]={g:0,m:0};
+qs.forEach((q,i)=>{mx+=q.lv;cs[q.c].m+=q.lv;if(ans[i]===q.a){raw+=q.lv;cs[q.c].g+=q.lv}});
+const f=raw/mx,iq=Math.round(70+64*f),cat={};for(const k in cs)cat[k]=cs[k].m?Math.round(cs[k].g/cs[k].m*100):0;
+const right=qs.filter((q,i)=>ans[i]===q.a).length;return{iq,cat,right}}
+const lvl=i=>i>=130?"Juda yuqori":i>=115?"Yuqori":i>=100?"O'rtadan yuqori":i>=85?"O'rta":"O'rtadan past";
+function finish(){clearInterval(tm);const r=calc();user.res=r;
+oid="o"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);try{localStorage.setItem("oid",oid)}catch(e){}
+app.dataset.s="p";app.innerHTML=`<h1>✅ Test yakunlandi!</h1><div class="card"><p>Natijangiz tayyor: <b style="color:#fff">${user.name}</b>, IQ darajangiz va sertifikatingiz hisoblab bo'ldi.</p>
+<p>Natija va chiroyli <b style="color:#fff">sertifikat</b>ni ko'rish uchun to'lovni amalga oshiring.</p>
+<div class="big" style="filter:blur(10px)">🔒 ${r.iq}</div>
+<div class="price" style="text-align:center">${PRICE} so'm</div></div>
+<div class="card"><h2>💳 To'lov</h2><p>Quyidagi karta raqamiga <b style="color:#fff">${PRICE} so'm</b> o'tkazing:</p>
+<div class="card-n">${CARD}</div><p class="small">Karta raqamini bosib nusxa oling.</p>
+<h2 style="margin-top:16px">🧾 Chekni yuklang</h2><input type="file" id="f" accept="image/*">
+<button class="btn g" id="sb" onclick="send()">Chekni yuborish</button></div>`}
+function compress(file){return new Promise((ok,no)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{let w=800,s=Math.min(1,w/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);let q=.6,d=c.toDataURL("image/jpeg",q);while(d.length>190000&&q>.2){q-=.1;d=c.toDataURL("image/jpeg",q)}ok(d)};im.onerror=no;im.src=fr.result};fr.onerror=no;fr.readAsDataURL(file)})}
+async function send(){const f=$("f").files[0];if(!f)return alert("Avval chek rasmini tanlang");
+if(!db)return alert("Aloqa o'rnatilmadi. Sahifani yangilab qayta urinib ko'ring.");
+$("sb").textContent="Yuborilmoqda...";try{const img=await compress(f);
+const rs=await fetch("/api/submit",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({id:oid,name:user.name,age:user.age,iq:user.res.iq,right:user.res.right,cat:user.res.cat,img})});if(!rs.ok)throw 0;wait()}catch(e){alert("Yuborib bo'lmadi, qayta urining");$("sb").textContent="Chekni yuborish"}}
+function wait(){app.dataset.s="wait";app.innerHTML=`<div class="card" style="text-align:center"><div class="big">⏳</div><h2>Chekingiz qabul qilindi</h2><p>To'lov tekshirilmoqda. Tasdiqlangach IQ natijangiz va sertifikat shu yerda paydo bo'ladi. Sahifani yopmang yoki keyinroq qayta kiring.</p></div>`;watch()}
+let un=null;
+function watch(){if(!oid)return;un&&un();const iv=setInterval(async()=>{try{const d=await (await fetch("/api/status?id="+oid)).json();if(d.status==="approved")cert(d)}catch(e){}},4000);un=()=>clearInterval(iv)}
+function cert(d){un&&un();app.dataset.s="c";const c=document.createElement("canvas");c.width=900;c.height=1200;const x=c.getContext("2d");
+let g=x.createLinearGradient(0,0,900,1200);g.addColorStop(0,"#fffaf0");g.addColorStop(1,"#f3ecff");x.fillStyle=g;x.fillRect(0,0,900,1200);
+x.strokeStyle="#c9a227";x.lineWidth=14;x.strokeRect(30,30,840,1140);x.lineWidth=3;x.strokeRect(55,55,790,1090);
+x.textAlign="center";x.fillStyle="#1b1f3b";x.font="bold 54px Georgia,serif";x.fillText("SERTIFIKAT",450,170);
+x.fillStyle="#c9a227";x.font="30px Georgia,serif";x.fillText("★ ★ ★ ★ ★",450,225);
+x.fillStyle="#555";x.font="26px Georgia,serif";x.fillText("Ushbu sertifikat egasi",450,300);
+x.fillStyle="#7c5cff";x.font="bold 52px Georgia,serif";let nm=d.name,fs=52;while(x.measureText(nm).width>700){fs-=2;x.font=`bold ${fs}px Georgia,serif`}x.fillText(nm,450,380);
+x.fillStyle="#555";x.font="26px Georgia,serif";x.fillText(d.age+" yosh",450,425);x.fillText("IQ testi natijasi:",450,500);
+x.fillStyle="#1b1f3b";x.font="bold 190px Georgia,serif";x.fillText(d.iq,450,690);
+x.fillStyle="#c9a227";x.font="bold 38px Georgia,serif";x.fillText("Daraja: "+lvl(d.iq),450,760);
+x.fillStyle="#555";x.font="24px Georgia,serif";x.fillText(`To'g'ri javoblar: ${d.right}/15`,450,810);
+let y=870;for(const k in CN){x.textAlign="left";x.fillStyle="#333";x.font="22px Georgia,serif";x.fillText(CN[k],150,y);x.fillStyle="#e4defa";x.fillRect(450,y-18,260,18);x.fillStyle="#7c5cff";x.fillRect(450,y-18,260*d.cat[k]/100,18);x.fillStyle="#333";x.fillText(d.cat[k]+"%",725,y);y+=48}
+x.textAlign="center";x.fillStyle="#777";x.font="20px Georgia,serif";x.fillText("Sana: "+new Date(d.ts).toLocaleDateString("uz-UZ"),450,1090);
+x.font="16px Georgia,serif";x.fillText("Ko'ngilochar test natijasi — rasmiy psixologik tashxis emas",450,1125);
+app.innerHTML=`<h1>🎉 Tabriklaymiz, ${d.name}!</h1><div class="card"><div class="big">${d.iq}</div><p style="text-align:center">Daraja: <b style="color:#fff">${lvl(d.iq)}</b></p></div>
+<img class="rc" src="${c.toDataURL("image/png")}"><p class="small">Sertifikatni saqlash uchun rasmni uzoq bosing yoki skrinshot oling.</p>`}
+// ===== ADMIN =====
+function adminOpen(){if($("mo"))return;const m=document.createElement("div");m.id="mo";m.innerHTML='<div><h2>Parol</h2><input id="pw" type="password" placeholder="Parolni kiriting"><button class="btn" id="pk">Kirish</button><button class="btn s" id="pc" style="margin-top:10px">Bekor</button></div>';document.body.appendChild(m);$("pc").onclick=()=>m.remove();$("pk").onclick=()=>{window.AP=$("pw").value;m.remove();panel()}}
+let ua=null;
+async function load(){const r=await fetch("/api/admin",{headers:{"x-pass":window.AP}});if(r.status===401){alert("Parol noto'g'ri");return setTimeout(()=>location.reload(),1500)}const ds=await r.json();window.ORD=ds;
+$("L").innerHTML=ds.length?ds.map(d=>`<div class="row"><b>${esc(d.name)}</b>, ${d.age} yosh<br><span class="small">${new Date(d.ts).toLocaleString("uz-UZ")} · ${d.status==="approved"?"✅ Tasdiqlangan":"⏳ Kutilmoqda"}</span>
+<img class="rc" src="${d.img}">${d.status==="approved"?"":`<button class="btn g" onclick="act(['${d.id}'])">Tasdiqlash</button>`}</div>`).join(""):"<p>Hozircha cheklar yo'q.</p>"}
+function panel(){app.dataset.s="a";app.innerHTML=`<h1>🔐 Boss panel</h1><button class="btn g" onclick="appr()">✅ Hammasini tasdiqlash</button><button class="btn s" onclick="location.reload()">← Chiqish</button><div id="L"><p>Yuklanmoqda...</p></div>`;load();clearInterval(window.PI);window.PI=setInterval(load,8000)}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+async function act(ids){await fetch("/api/admin",{method:"POST",headers:{"x-pass":window.AP,"content-type":"application/json"},body:JSON.stringify({ids})});load()}
+function appr(){const p=(window.ORD||[]).filter(d=>d.status!=="approved").map(d=>d.id);if(!p.length)return alert("Kutayotgan chek yo'q");act(p)}
+// Qaytib kirganlar uchun
+if(oid){app.dataset.s="wait";wait()}else welcome();
+</script></body></html>
